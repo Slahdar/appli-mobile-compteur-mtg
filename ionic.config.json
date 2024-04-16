@@ -1,0 +1,7 @@
+{
+  "name": "LifeCount",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
