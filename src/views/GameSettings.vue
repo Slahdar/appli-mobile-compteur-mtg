@@ -9,7 +9,7 @@
     <!-- Inputs pour les Joueurs -->
     <div v-for="(player, index) in players" :key="index">
       <input type="text" v-model="player.name" placeholder="Nom du Joueur">
-      <input type="color" v-model="player.color">
+      <input type="color" v-model="player.color.hexa">
       <button @click="removePlayer(index)" :disabled="players.length <= 2">Supprimer</button>
     </div>
     <button @click="addPlayer" :disabled="players.length >= 6">Ajouter Joueur</button>
@@ -27,15 +27,20 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import {GAME_MODES} from '@/constants/constants.ts';
+import {GAME_MODES, COLOR_LIST} from '@/constants/constants.ts';
 
 export default defineComponent({
   data() {
     return {
       gameModes: GAME_MODES,
       selectedMode: GAME_MODES[0],
-      players: []
+      players: [],
+      colorList: COLOR_LIST
     };
+  },
+  created() {
+    // Initialise le nombres de joueurs par défaut
+    this.adjustPlayerInputs();
   },
   methods: {
     adjustPlayerInputs() {
@@ -43,7 +48,7 @@ export default defineComponent({
       if (this.players.length < requiredPlayers) {
         while (this.players.length < requiredPlayers) {
           const playerNumber = this.players.length + 1;
-          this.players.push({name: 'Joueur ' + playerNumber, color: '#000000'});
+          this.players.push({name: 'Joueur ' + playerNumber, color: this.colorList[this.players.length], hasLost: false});
         }
       } else if (this.players.length > requiredPlayers) {
         this.players.splice(requiredPlayers); // Réduit le nombre de joueurs
@@ -52,7 +57,7 @@ export default defineComponent({
     addPlayer() {
       if (this.players.length < 6) {
         const playerNumber = this.players.length + 1;
-        this.players.push({name: 'Joueur ' + playerNumber, color: '#000000'});
+        this.players.push({name: 'Joueur ' + playerNumber, color: this.colorList[this.players.length], hasLost: false});
       }
     },
     removePlayer(index) {
